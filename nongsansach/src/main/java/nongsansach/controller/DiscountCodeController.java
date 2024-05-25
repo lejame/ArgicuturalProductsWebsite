@@ -1,6 +1,8 @@
 package nongsansach.controller;
 
 import nongsansach.Entity.DiscountCodesEntity;
+import nongsansach.Entity.SimpleFactory.DiscountFactory;
+import nongsansach.Entity.Strategies.IStrategyDiscount;
 import nongsansach.dto.DiscountCodeDTO;
 import nongsansach.payload.request.DiscountCodeRequest;
 import nongsansach.payload.response.BaseResponse;
@@ -46,21 +48,24 @@ public class DiscountCodeController {
     }
 
     @PreAuthorize("hasAuthority('Admin') or hasAuthority('User')")
-    @GetMapping("/{name}")
-    public ResponseEntity<?> get_discountCode_id(@PathVariable String name){
+    @GetMapping("/{name}/{price}")
+    public ResponseEntity<?> get_discountCode_id(@PathVariable String name,@PathVariable double price){
         BaseResponse baseResponse = new BaseResponse();
         try {
             DiscountCodesEntity discountCodesEntity = discountCodeServiceImp.get_discount_by_name(name);
-            DiscountCodeDTO discountCodeDTO = new DiscountCodeDTO();
+            if(discountCodesEntity != null){
+                DiscountFactory factory  = new DiscountFactory();
+                IStrategyDiscount iStrategyDiscount = factory.createDiscount(discountCodesEntity.getLow_price());
+                double total_price_discount = iStrategyDiscount.applyDiscount(price);
+                baseResponse.setData(total_price_discount);
+                baseResponse.setMessage("Giảm thành công");
+                baseResponse.setStatusCode(200);
+            }
+            else {
+                baseResponse.setMessage("Mã giảm không tồn tại");
+                baseResponse.setStatusCode(200);
+            }
 
-            discountCodeDTO.setName(discountCodesEntity.getName());
-            discountCodeDTO.setId(discountCodesEntity.getId());
-            discountCodeDTO.setLow_price(discountCodesEntity.getLow_price());
-            discountCodeDTO.setExpiration_date(discountCodesEntity.getExpiration_date());
-
-            baseResponse.setData(discountCodeDTO);
-            baseResponse.setMessage("Lấy dữ liệu thành công");
-            baseResponse.setStatusCode(200);
         }catch (Exception e){
             baseResponse.setMessage("Issue:"+e.getMessage());
             baseResponse.setStatusCode(400);

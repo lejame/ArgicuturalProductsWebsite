@@ -41,4 +41,15 @@ public class LoginService implements LoginServiceImp {
 
         return token;
     }
+
+    @Override
+    public String checkLoginByGmail(String email) {
+        String token = "";
+        UsersEntity usersEntity = usersRepository.findByEmail(email);
+        RoleResponse roleResponse = new RoleResponse();
+        roleResponse.setName(usersEntity.getRole().getName());
+        String roles = gson.toJson(roleResponse);
+        token = jwtUltils.createToken(roles);
+        return token;
+    }
 }

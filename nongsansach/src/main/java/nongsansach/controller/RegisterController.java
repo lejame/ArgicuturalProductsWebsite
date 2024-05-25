@@ -1,6 +1,9 @@
 package nongsansach.controller;
 
 import jakarta.validation.Valid;
+import nongsansach.Entity.Builder.UserEntiryBuilder;
+import nongsansach.Entity.Facade.Data.Register;
+import nongsansach.Entity.Facade.UserFacade;
 import nongsansach.Entity.RolesEntity;
 import nongsansach.Entity.UsersEntity;
 import nongsansach.payload.request.LoginRequest;
@@ -27,16 +30,13 @@ public class RegisterController {
     @Autowired
     UserServiceImp userServiceImp;
 
+
     @PostMapping("")
     public ResponseEntity<?> register(@Valid LoginRequest loginRequest) {
         if (userServiceImp.check_exit_User(loginRequest.getUsername()) == false) {
-            UsersEntity usersEntity = new UsersEntity();
-            usersEntity.setEmail(loginRequest.getUsername());
-            usersEntity.setFullname(loginRequest.getFirst_name() + " " + loginRequest.getLast_name());
-            usersEntity.setPassword(passwordEncoder.encode(loginRequest.getPassword()));
-            RolesEntity rolesEntity = roleServiceImp.find_by_name("User");
-            usersEntity.setRole(rolesEntity);
-            userServiceImp.saveUserEntity(usersEntity);
+            UserFacade userFacade = new UserFacade();
+            Register register = new Register(loginRequest.getUsername(), loginRequest.getPassword(), loginRequest.getFirst_name(), loginRequest.getLast_name());
+            userFacade.UserFacadeActionRegister(userServiceImp,passwordEncoder,roleServiceImp,register);
             return new ResponseEntity<>("Lưu Thành công", HttpStatus.OK);
         }
         return new ResponseEntity<>("tài khoản đã tồn tại", HttpStatus.OK);

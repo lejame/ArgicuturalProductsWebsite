@@ -7,6 +7,8 @@ import nongsansach.service.Imp.UserServiceImp;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 @Service
 public class UserService implements UserServiceImp {
     @Autowired
@@ -39,6 +41,11 @@ public class UserService implements UserServiceImp {
     @Override
     public UsersEntity find_user_email(String email) {
         return usersRepository.findByEmail(email);
+    }
+
+    @Override
+    public List<UsersEntity> getAll() {
+        return usersRepository.findAll();
     }
 
 

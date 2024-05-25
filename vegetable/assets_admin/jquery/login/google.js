@@ -1,6 +1,8 @@
-
 document.addEventListener("DOMContentLoaded", function () {
   const extractResponseData = (response) => {
+    console.log(response);
+
+    // Decode the response
     const responseObject = JSON.parse(response);
 
     const base64Data = responseObject.base64Data
@@ -8,13 +10,17 @@ document.addEventListener("DOMContentLoaded", function () {
       .replace(/_/g, "/");
     const decodedData = atob(base64Data);
     const binaryData = decodeURIComponent(escape(decodedData));
-    console.log(binaryData);
+    const token = responseObject.token;
+
+    localStorage.setItem("Token", token);
 
     // Parse the binaryData JSON string
     const jsonData = JSON.parse(binaryData);
     const email = jsonData.email;
     const name = jsonData.name;
-    localStorage.setItem("username",name);
+    localStorage.setItem("username", name);
+    localStorage.setItem("email", email);
+
   };
 
   const getAuthResponse = () => {

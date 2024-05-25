@@ -17,6 +17,7 @@ $(document).ready(function () {
       if (result.data != null) {
         localStorage.setItem("Token", result.data.token);
         localStorage.setItem("username", result.data.username);
+        
         if (result.data.role == "Admin") {
           window.location.href = "index.html";
         } else {

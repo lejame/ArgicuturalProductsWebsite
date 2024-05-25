@@ -52,7 +52,7 @@ function submitReivews() {
     var year = currentDate.getFullYear();
     var formattedDate = day + "/" + month + "/" + year;
 
-    if (!username || !email || !review_content) {
+    if (!email || !review_content) {
       alert("Please fill out all fields");
     } else {
       var formdata = new FormData();

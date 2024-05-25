@@ -23,6 +23,10 @@ $(document).ready(function () {
     var old_price = $(".input-old-price").val();
     var rate = "0";
     var quantity = $(".input-quantity").val() || "1";
+    var size = $(".size").val();
+    var hsd  =$(".HSD").val();
+    var provider  =$(".provider").val();
+
 
     var fileList = [selectedFile1, selectedFile2];
     console.log(fileList);
@@ -44,6 +48,9 @@ $(document).ready(function () {
       quantity: quantity,
       name_category: categoryName,
       rate: 0,
+      size: size,
+      hsd: hsd,
+      provider: provider,
     };
     formData.append(
       "data",
@@ -53,7 +60,7 @@ $(document).ready(function () {
     fileList.forEach((item) => {
       formData.append("file", item);
     });
-
+    
     console.log(fileList);
 
     axios
@@ -67,7 +74,6 @@ $(document).ready(function () {
       .then((result) => {
         if (!result) {
           alert("Lỗi");
-
         } else {
           alert("Thêm dữ liệu thành công");
           location.reload();

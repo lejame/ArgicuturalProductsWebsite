@@ -2,7 +2,7 @@ package nongsansach.security;
 
 
 import com.cloudinary.Cloudinary;
-import nongsansach.config.FacebookSignInAdapter;
+import nongsansach.config.facebook.FacebookSignInAdapter;
 import nongsansach.filter.CustomJwtFilter;
 import nongsansach.security.OAuth.CustomSuccessHandler;
 import nongsansach.security.OAuth.SuccessHandler;

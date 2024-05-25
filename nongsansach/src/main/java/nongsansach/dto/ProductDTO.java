@@ -1,16 +1,16 @@
 package nongsansach.dto;
 
-import lombok.Getter;
-import lombok.Setter;
+import lombok.*;
 
 @Setter
 @Getter
+@AllArgsConstructor
+@NoArgsConstructor
+@Builder
 public class ProductDTO {
     private int id;
 
     private String name;
-
-    private String description;
 
     private Double price;
 
@@ -25,5 +25,15 @@ public class ProductDTO {
     private int review_number;
 
     private int quantity;
+
+    private String stateProduct;
+
+    private int quantity_stock;
+
+    private String size;
+
+    private String HSD;
+
+    private String description;
 
 }

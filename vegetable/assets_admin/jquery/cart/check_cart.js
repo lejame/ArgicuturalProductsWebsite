@@ -121,31 +121,22 @@ function check_discount_code() {
   $(".form-apply-discount").submit(function (e) {
     e.preventDefault();
     var code = $(".discountCode").val();
+
     $.ajax({
       method: "GET",
-      url: "http://localhost:8080/discount/" + code,
+      url: "http://localhost:8080/discount/" + code + "/" + total_price,
       headers: {
         "Content-Type": "application/json",
         Authorization: "Bearer " + localStorage.getItem("Token"),
       },
     }).done(function (result) {
-      console.log(result)
-      $(".discount-code").text(result.data.low_price + "%");
-      upload_discount_code(result);
+      $(".total-amount").text("$"+ result.data);
+      $(".discount-code").text(100 - (result.data * 100) / total_price + "%");
     });
   });
 }
-function upload_discount_code(result){
-  var cart = localStorage.getItem("cart");
-  var dataCart = JSON.parse(cart);
-  var count = 0;
-  for (var i = 0; i < dataCart.length; i++) {
-    count += dataCart[i].soluong * dataCart[i].price;
-  }
-  var count_ship = ((count + 70) -(count + 70)*result.data.low_price/100).toFixed(2);
-  $(".total-price").text("$" + count);
-  $(".total-amount").text("$" + count_ship);
-}
+
+var total_price = 0;
 function totol_price() {
   $(".total-price").text("");
   var cart = localStorage.getItem("cart");
@@ -154,7 +145,7 @@ function totol_price() {
   for (var i = 0; i < dataCart.length; i++) {
     count += dataCart[i].soluong * dataCart[i].price;
   }
-  var count_ship = count + 70;
+  total_price = count;
   $(".total-price").text("$" + count);
-  $(".total-amount").text("$" + count_ship);
+  $(".total-amount").text("$" + count);
 }

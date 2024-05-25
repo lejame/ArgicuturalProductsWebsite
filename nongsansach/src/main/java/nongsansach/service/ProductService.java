@@ -11,7 +11,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
@@ -53,7 +55,13 @@ public class ProductService implements ProductServiceImp {
             productEntity.setRate(insertProductRequest.getRate());
             productEntity.setQuantity(insertProductRequest.getQuantity());
             productEntity.setOld_price(insertProductRequest.getOld_price()!=0?insertProductRequest.getOld_price():null);
-
+            productEntity.setSize(insertProductRequest.getSize());
+            productEntity.setHSD(insertProductRequest.getHsd());
+            productEntity.setProvider(insertProductRequest.getProvider());
+            Date currentDate = new Date();
+            SimpleDateFormat formatter = new SimpleDateFormat("dd-MM-yyyy");
+            String formattedDateTime = formatter.format(currentDate);
+            productEntity.setNSX(formattedDateTime);
             save_product(productEntity);
 
         } catch (Exception e) {
@@ -76,6 +84,12 @@ public class ProductService implements ProductServiceImp {
     public ProductEntity find_product_id(int id) {
 
         return productRepository.findById(id);
+    }
+
+    @Override
+    public boolean delete_by_id(int id) {
+        productRepository.deleteById(id);
+        return true;
     }
 
 }

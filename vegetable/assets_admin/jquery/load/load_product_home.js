@@ -8,6 +8,7 @@ $(document).ready(function () {
     handleCartButtonClickDelete();
     loadBlogHome();
     addCartList();
+    addWishList();
   } else {
     createElementCart();
   }
@@ -20,10 +21,12 @@ function handleCartButtonClick() {
     var carts = [];
     var dataCart = localStorage.getItem("cart");
     if (dataCart) {
+      console.log(dataCart);
       carts = JSON.parse(dataCart);
-    } 
+      console.log(carts);
+    }
     var isExistProduct = false;
-    var data = $(this).attr("data-product");
+    var data = $(this).attr("data-product-json");
     var datapasre = JSON.parse(data);
     for (var i = 0; i < carts.length; i++) {
       if (datapasre.id === carts[i].id) {
@@ -95,9 +98,13 @@ function loadData() {
 
 function displayProducts(products) {
   var htmlItem = "";
-  for (var i = 0; i < 4; i++) {
-    var product = products[i];
-    htmlItem += createProductHTML(product);
+  var j = 0;
+  for (var i = 0; i < products.length; i++) {
+    if (j < 4) {
+      var product = products[i];
+      htmlItem += createProductHTML(product);
+      j++;
+    }
   }
   $("#best_product").append(htmlItem);
 }
@@ -105,12 +112,15 @@ function displayProducts(products) {
 function cartList() {
   clickAddCart = true;
   var dataCart = localStorage.getItem("cart");
-  var data = JSON.parse(dataCart);
+  if (dataCart !== null) {
+    var data = JSON.parse(dataCart);
+  }
   var htmlListCart = "";
 
   var count = 0;
   if (data) {
     for (var i = 0; i < data.length; i++) {
+      var product = data[i];
       count += data[i].soluong * data[i].price;
       htmlListCart += `<div class="single-cart-item">
                             <div class="cart-img">
@@ -128,7 +138,7 @@ function cartList() {
                                     </div>
                                     <button type="button"><i
                                             class="ion-trash-b" data-product-id='${JSON.stringify(
-                                              data[i]
+                                              product
                                             )}'></i></button>
                                 </div>
                             </div>
@@ -150,7 +160,7 @@ function cartList() {
 }
 function createProductHTML(product) {
   var htmlLableSoldOut = "";
-  if (product.quantity === 0) {
+  if (product.stateProduct == "SOLDOUT") {
     htmlLableSoldOut += `<div class="label-product">
                             <span class="label-sale position-absolute text-uppercase text-white text-center d-block">Soldout</span>
                         </div>`;
@@ -164,7 +174,7 @@ function createProductHTML(product) {
 
   var oldPrice = product.old_price || "";
   var htmlOldPrice = oldPrice
-    ? '<span class="old-price">' + oldPrice + "$</span>"
+    ? '<span class="old-price"><del>' + oldPrice + "$</del></span>"
     : "";
 
   var images = product.images.split(",");
@@ -195,7 +205,7 @@ function createProductHTML(product) {
                   </div>
               </div>
               <div class="add-action d-flex position-absolute">
-                  <a  title="Add To cart" class="btn-cart" data-product='${JSON.stringify(
+                  <a title="Add To cart" class="btn-cart" data-product-json='${JSON.stringify(
                     product
                   )}'>
                       <i class="ion-bag "></i>
@@ -203,7 +213,7 @@ function createProductHTML(product) {
                   <a href="compare.html" title="Compare">
                       <i class="ion-ios-loop-strong"></i>
                   </a>
-                  <a href="wishlist.html" title="Add To Wishlist">
+                  <a href="wishlist.html" class="add-wish-list" title="Add To Wishlist" product_wish_id='${product.id}'>
                       <i class="ion-ios-heart-outline"></i>
                   </a>
                   <a id="reviewproduct-${
@@ -344,5 +354,30 @@ function addCartList() {
     var dataJsonCart = JSON.stringify(carts);
     localStorage.setItem("cart", dataJsonCart);
     createElementCart();
+  });
+}
+
+function addWishList() {
+  $("body").on("click", ".add-wish-list", function (e) {
+    e.preventDefault();
+    var product = $(".add-wish-list").attr("product_wish_id");
+    console.log(product);
+    var email = localStorage.getItem("email");
+    console.log(product);
+    $.ajax({
+      method: "Post",
+      url: "http://localhost:8080/wishlist/" + email + "/" + product,
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: "Bearer " + localStorage.getItem("Token"),
+      },
+    })
+      .done(function (result) {
+        console.log(result);
+        // window.location="wishlist.html";
+      })
+      .fail(function (jqXHR, textStatus, errorThrown) {
+        console.error("AJAX request failed: " + textStatus, errorThrown);
+      });
   });
 }

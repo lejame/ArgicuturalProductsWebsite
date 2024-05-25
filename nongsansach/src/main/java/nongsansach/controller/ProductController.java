@@ -3,6 +3,8 @@ package nongsansach.controller;
 import jakarta.validation.Valid;
 import nongsansach.Entity.ProductEntity;
 import nongsansach.Entity.ReviewsEntity;
+import nongsansach.Entity.SimpleFactory.StateFactory;
+import nongsansach.Entity.State.ProductService;
 import nongsansach.dto.ProductDTO;
 import nongsansach.payload.request.InsertProductRequest;
 import nongsansach.payload.response.BaseResponse;
@@ -41,13 +43,14 @@ public class ProductController {
             ProductEntity product = productServiceImp.insertProduct(files, insertProductRequest);
             ProductDTO productDTO = new ProductDTO();
             productDTO.setImages(product.getImages());
-            productDTO.setDescription(product.getDescription());
             productDTO.setName(product.getName());
             productDTO.setRate(product.getRate());
             productDTO.setCategory(product.getCategoryEntity().getName());
             productDTO.setPrice(product.getPrice());
             productDTO.setQuantity(product.getQuantity());
             productDTO.setOld_price(product.getOld_price());
+            productDTO.setDescription(product.getDescription());
+
             baseResponse.setMessage("Lưu thành công");
             baseResponse.setData(productDTO);
 
@@ -58,7 +61,7 @@ public class ProductController {
         return new ResponseEntity<>(baseResponse, HttpStatus.OK);
     }
 
-    @PreAuthorize("hasAuthority('Admin') or hasAuthority('User') ")
+//    @PreAuthorize("hasAuthority('Admin') or hasAuthority('User') ")
     @GetMapping()
     public ResponseEntity<?> getAllProduct() {
         List<ProductEntity> productEntities = productServiceImp.get_all_product();
@@ -69,7 +72,6 @@ public class ProductController {
             ProductDTO productDTO = new ProductDTO();
             productDTO.setCategory(products.getCategoryEntity().getName());
             productDTO.setName(products.getName());
-            productDTO.setDescription(products.getDescription());
             productDTO.setPrice(products.getPrice());
             String imagesString = products.getImages();
             List<String> list_images = Arrays.asList(imagesString.split(","));
@@ -88,6 +90,12 @@ public class ProductController {
             productDTO.setReview_number(reviewsEntityList.size());
             productDTO.setId(products.getId());
             productDTO.setQuantity(products.getQuantity());
+            StateFactory stateFactory  = new StateFactory();
+            ProductService productService =stateFactory.createState(products.getQuantity());
+            productDTO.setStateProduct(productService.handleRequest());
+            productDTO.setDescription(products.getDescription());
+            productDTO.setHSD(products.getHSD());
+            productDTO.setSize(products.getSize());
             list_productDTO.add(productDTO);
         }
         baseResponse.setData(list_productDTO);
@@ -114,4 +122,16 @@ public class ProductController {
         baseResponse.setMessage("Dữ liệu được dữ liệu");
         return new ResponseEntity<>(baseResponse,HttpStatus.OK);
     }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<?> deleteProductById(@PathVariable("id") int id){
+        productServiceImp.delete_by_id(id);
+        BaseResponse baseResponse = new BaseResponse();
+        baseResponse.setData(true);
+        baseResponse.setMessage("Xóa thành công");
+        return new ResponseEntity<>(baseResponse,HttpStatus.OK);
+
+    }
+
+
 }

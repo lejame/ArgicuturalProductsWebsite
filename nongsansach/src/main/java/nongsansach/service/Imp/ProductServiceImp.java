@@ -15,4 +15,6 @@ public interface ProductServiceImp {
     ProductEntity find_product_name(String name_product);
 
     ProductEntity find_product_id(int id);
+
+    boolean delete_by_id(int id);
 }

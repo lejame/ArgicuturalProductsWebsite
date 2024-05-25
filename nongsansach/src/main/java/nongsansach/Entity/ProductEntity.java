@@ -15,7 +15,7 @@ public class ProductEntity {
     private int id;
 
     private String name;
-
+    @Column(length = 1000)
     private String description;
 
     private Double price;
@@ -26,6 +26,16 @@ public class ProductEntity {
 
     private int rate;
 
+    private String size;
+
+    private String provider;
+
+    private String NSX;
+
+    private String HSD;
+
+
+
     @ManyToOne
     @JoinColumn(name = "categoryEntity")
     private CategoryEntity categoryEntity;
@@ -34,5 +44,7 @@ public class ProductEntity {
 
     @OneToMany(mappedBy="productEntity")
     private List<ReviewsEntity> reviewsEntity;
+
+
 
 }

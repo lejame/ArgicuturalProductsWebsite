@@ -170,7 +170,9 @@ function createProductHTML(product) {
   return `${returnStringHere}
               <div class="single-product position-relative">
                 <div class="product-image" data=>
-                  <a class="d-block" href="product-details.html?data=${btoa(unescape(encodeURIComponent(JSON.stringify(product))))}">
+                  <a class="d-block" href="product-details.html?data=${btoa(
+                    unescape(encodeURIComponent(JSON.stringify(product)))
+                  )}">
                   ${htmlImages}
                   </a>
                 </div>
@@ -220,6 +222,7 @@ $(document).on("click", "[id*='reviewproduct-']", function () {
     for (var i = 0; i < productList.length; i++) {
       if (productList[i].id === parseInt(productId)) {
         var foundProduct = productList[i];
+        console.log(foundProduct);
         CreateReviewModal(foundProduct);
         break;
       }
@@ -252,6 +255,7 @@ function CreateReviewModal(product) {
   if (product.old_price === null) {
     $(".preview-oldprice").hide();
   }
+  console.log(product.rate);
   var htmlRating = "";
   for (var j = 0; j < 5; j++) {
     htmlRating +=
@@ -259,7 +263,7 @@ function CreateReviewModal(product) {
         ? '<i class="fa fa-star"></i>'
         : '<i class="fa fa-star-o"></i>';
   }
-  htmlRating += `<span>${product.review_number} Reviews</span>`;
+  htmlRating += `<span> ${product.review_number} Reviews</span>`;
   $(".preview-oldprice").text(product.old_price + "$");
   $(".preview-productname").text(product.name);
   $(".preview-newprice").text(product.price + "$");

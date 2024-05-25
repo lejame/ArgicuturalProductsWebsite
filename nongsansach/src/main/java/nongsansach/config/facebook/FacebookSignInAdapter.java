@@ -1,4 +1,4 @@
-package nongsansach.config;
+package nongsansach.config.facebook;
 
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
